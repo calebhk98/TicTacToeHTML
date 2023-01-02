@@ -1,0 +1,160 @@
+<html>
+
+<head>
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            background: #999;
+        }
+
+        .content {
+            width: 306px;
+            height: 306px;
+            margin: 0 auto;
+            position: relative;
+            background: #fff;
+        }
+
+        .board {
+            display: flex;
+            flex-wrap: wrap;
+            width: 300px;
+            height: 300px;
+            border: 1px solid #000;
+            position: relative;
+        }
+
+        .square {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .x {
+            color: #f00;
+        }
+
+        .o {
+            color: #00f;
+        }
+
+        .vertical-line {
+            position: absolute;
+            width: 1px;
+            height: 100%;
+            background: #000;
+            bottom: 0;
+            top: 0;
+        }
+
+        .horizontal-line {
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            background: #000;
+            left: 0;
+            right: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="board">
+            <div class="square" data-index="0"></div>
+            <div class="square" data-index="1"></div>
+            <div class="square" data-index="2"></div>
+            <div class="square" data-index="3"></div>
+            <div class="square" data-index="4"></div>
+            <div class="square" data-index="5"></div>
+            <div class="square" data-index="6"></div>
+            <div class="square" data-index="7"></div>
+            <div class="square" data-index="8"></div>
+
+            <div class="vertical-line" style="left: 100px;"></div>
+            <div class="vertical-line" style="right: 100px;"></div>
+
+            <div class="horizontal-line" style="top: 100px;"></div>
+            <div class="horizontal-line" style="bottom: 100px;"></div>
+        </div>
+
+        <script>
+            const board = document.querySelector('.board');
+
+            let turn = 'X';
+            let count = 0;
+            let finished = false;
+
+            board.addEventListener('click', e => {
+                if (finished) {
+                    return;
+                }
+
+                const square = e.target;
+
+                if (square.innerText) {
+                    return; // already clicked, do nothing!
+                }
+
+                square.innerText = turn;
+
+                if (turn === 'X') {
+                    square.classList.add('x');
+
+                    turn = 'O';
+                } else {
+                    square.classList.add('o');
+
+                    turn = 'X';
+                }
+
+                setTimeout(checkWin, 50);// check for a win after each turn!
+
+                count++;
+
+            });
+
+            function checkWin() {
+                const squares = document.querySelectorAll('.square');
+
+                // winning combinations (3 in a row) 
+                const winningCombos = [
+                    [0, 1, 2],  // top row 
+                    [3, 4, 5],  // middle row 
+                    [6, 7, 8],  // bottom row 
+                    [0, 3, 6],  // left column 
+                    [1, 4, 7],  // middle column 
+                    [2, 5, 8],  // right column 
+                    [0, 4, 8],  // diagonal top left to bottom right 
+                    [2, 4, 6]   // diagonal top right to bottom left 
+                ];
+
+                for (let i = 0; i < winningCombos.length; i++) { // loop through all winning combos 
+
+                    const [a, b, c] = winningCombos[i]; // destructure the current combo into 3 variables 
+
+                    if (squares[a].innerText && squares[a].innerText === squares[b].innerText && squares[a].innerText === squares[c].innerText) { // check if all 3 squares have the same innerText (X or O) 
+                        board.removeEventListener('click', () => { }); // remove the click event listener so no more moves can be made
+                        finished = true;
+                        alert(`Player ${squares[a].innerText} wins!`); // alert the winner! 
+                        break; // break out of the loop since we found a winner! 
+                    }
+
+                }
+                if (count === 9 && !finished) {
+                    finished = true;
+                    alert('Tie');
+                    return;
+                }
+
+            }
+
+        </script>
+</body>
+
+</html>
